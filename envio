@@ -1,68 +1,89 @@
-CREATE TABLE Pessoas (
-    codigo CHAR(8) NOT NULL,
-    nome VARCHAR(150),
-    PRIMARY KEY (codigo)
+-- Criação da tabela Animal
+CREATE TABLE Animal (
+    ID_Animal NUMERIC(8) NOT NULL PRIMARY KEY,
+    Nome VARCHAR(100) NOT NULL,
+    Especie VARCHAR(50) NOT NULL,
+    Raca VARCHAR(50),
+    Idade NUMERIC(3),
+    Historico_Medico VARCHAR(4000)
 );
 
-CREATE TABLE Clientes (
-    codigo CHAR(8) NOT NULL,
-    cpf CHAR(11),
-    PRIMARY KEY (codigo),
-    FOREIGN KEY (codigo) REFERENCES Pessoas(codigo)
+-- Criação da tabela Veterinário
+CREATE TABLE Veterinario (
+    ID_Veterinario NUMERIC(8) NOT NULL PRIMARY KEY,
+    Nome VARCHAR(100) NOT NULL,
+    Especialidade VARCHAR(100),
+    Anos_Experiencia NUMERIC(2)
 );
 
-CREATE TABLE Fornecedores (
-    codigo CHAR(8) NOT NULL,
-    cnpj CHAR(18),
-    PRIMARY KEY (codigo),
-    FOREIGN KEY (codigo) REFERENCES Pessoas(codigo)
+-- Criação da tabela Consulta
+CREATE TABLE Consulta (
+    ID_Consulta NUMERIC(8) NOT NULL PRIMARY KEY,
+    ID_Animal NUMERIC(8) NOT NULL,
+    ID_Veterinario NUMERIC(8) NOT NULL,
+    Data DATE NOT NULL,
+    Descricao VARCHAR(4000),
+    FOREIGN KEY (ID_Animal) REFERENCES Animal(ID_Animal),
+    FOREIGN KEY (ID_Veterinario) REFERENCES Veterinario(ID_Veterinario)
 );
 
-CREATE TABLE Vendas (
-    nota_fiscal NUMERIC(10) NOT NULL,
-    data_venda DATE NOT NULL,
-    codigo CHAR(8) NOT NULL,
-    PRIMARY KEY (nota_fiscal),
-    FOREIGN KEY (codigo) REFERENCES Clientes(codigo)
+-- Criação da tabela Medicamento
+CREATE TABLE Medicamento (
+    ID_Medicamento NUMERIC(8) NOT NULL PRIMARY KEY,
+    Nome VARCHAR(100) NOT NULL,
+    Tipo VARCHAR(50),
+    Quantidade_Estoque NUMERIC(5)
 );
 
-CREATE TABLE Produtos (
-    cod_prod NUMERIC(5) NOT NULL,
-    descricao VARCHAR(200),
-    codigo CHAR(8) NOT NULL,
-    qtd_estoque NUMERIC(4),
-    preco NUMERIC(10,2),
-    PRIMARY KEY (cod_prod),
-    FOREIGN KEY (codigo) REFERENCES Fornecedores(codigo)
+-- Criação da tabela Prescrição
+CREATE TABLE Prescricao (
+    ID_Prescricao NUMERIC(8) NOT NULL PRIMARY KEY,
+    ID_Medicamento NUMERIC(8) NOT NULL,
+    ID_Consulta NUMERIC(8) NOT NULL,
+    ID_Animal NUMERIC(8) NOT NULL,
+    ID_Veterinario NUMERIC(8) NOT NULL,
+    Dosagem CHAR(50) NOT NULL,
+    Frequencia CHAR(50) NOT NULL,
+    FOREIGN KEY (ID_Medicamento) REFERENCES Medicamento(ID_Medicamento),
+    FOREIGN KEY (ID_Consulta) REFERENCES Consulta(ID_Consulta),
+    FOREIGN KEY (ID_Animal) REFERENCES Animal(ID_Animal),
+    FOREIGN KEY (ID_Veterinario) REFERENCES Veterinario(ID_Veterinario)
 );
 
-CREATE TABLE Itens_Vendidos (
-    nota_fiscal NUMERIC(10) NOT NULL,
-    cod_prod NUMERIC(5) NOT NULL,
-    quantidade NUMERIC(4),
-    desconto NUMERIC(3),
-    preco NUMERIC(10,2),
-    PRIMARY KEY (nota_fiscal, cod_prod),
-    FOREIGN KEY (nota_fiscal) REFERENCES Vendas(nota_fiscal),
-    FOREIGN KEY (cod_prod) REFERENCES Produtos(cod_prod)
+-- Criação da tabela Exame
+CREATE TABLE Exame (
+    ID_Exame NUMERIC(8) NOT NULL PRIMARY KEY,
+    ID_Consulta NUMERIC(8) NOT NULL,
+    ID_Animal NUMERIC(8) NOT NULL,
+    ID_Veterinario NUMERIC(8) NOT NULL,
+    Tipo VARCHAR(50) NOT NULL,
+    Data_Exame DATE NOT NULL,
+    Resultado CHAR(4000),
+    FOREIGN KEY (ID_Consulta) REFERENCES Consulta(ID_Consulta),
+    FOREIGN KEY (ID_Animal) REFERENCES Animal(ID_Animal),
+    FOREIGN KEY (ID_Veterinario) REFERENCES Veterinario(ID_Veterinario)
 );
 
-CREATE TABLE Promocoes (
-    cod_promo NUMERIC(8) NOT NULL,
-    nome_promo VARCHAR(50),
-    data_ini DATE,
-    data_fim DATE,
-    PRIMARY KEY (cod_promo)
-);
+-- Inserir dados na tabela Animal
+INSERT INTO ANIMAL VALUES (1, 'Rex', 'Cachorro', 'Labrador', 5, 'Histórico limpo');
+INSERT INTO ANIMAL VALUES (2, 'Mingau', 'Gato', 'Siamês', 3, 'Alergia a medicamentos');
 
-CREATE TABLE Itens_Promo (
-    cod_promo NUMERIC(8) NOT NULL,
-    cod_prod NUMERIC(5) NOT NULL,
-    desconto NUMERIC(3),
-    cod_promo_0 NUMERIC(8),
-    cod_prod_0 NUMERIC(5),
-    PRIMARY KEY (cod_promo, cod_prod),
-    FOREIGN KEY (cod_promo) REFERENCES Promocoes(cod_promo),
-    FOREIGN KEY (cod_prod) REFERENCES Produtos(cod_prod),
-    FOREIGN KEY (cod_promo_0, cod_prod_0) REFERENCES Itens_Promo(cod_promo, cod_prod)
-);
+-- Inserir dados na tabela Veterinário
+INSERT INTO VETERINARIO VALUES (1, 'Dr. João', 'Cirurgia', 10);
+INSERT INTO VETERINARIO VALUES (2, 'Dra. Ana', 'Clínica Geral', 5);
+
+-- Inserir dados na tabela Medicamento
+INSERT INTO MEDICAMENTO VALUES (1, 'Antibiótico', 'Oral', 50);
+INSERT INTO MEDICAMENTO VALUES (2, 'Anti-inflamatório', 'Injetável', 30);
+
+-- Inserir dados na tabela Consulta
+INSERT INTO CONSULTA VALUES (1, TO_DATE('2024-11-01', 'YYYY-MM-DD'), 'Consulta de rotina', 1, 1);
+INSERT INTO CONSULTA VALUES (2, TO_DATE('2024-11-05', 'YYYY-MM-DD'), 'Exame preventivo', 2, 2);
+
+-- Inserir dados na tabela Prescrição
+INSERT INTO PRESCRICAO VALUES (1, 1, 1, '500mg', '2x ao dia');
+INSERT INTO PRESCRICAO VALUES (2, 2, 2, '200mg', '1x ao dia');
+
+-- Inserir dados na tabela Exame
+INSERT INTO EXAME VALUES (1, 'Raio-X', TO_DATE('2024-11-05', 'YYYY-MM-DD'), 'Normal', 2);
+INSERT INTO EXAME VALUES (2, 'Sangue', TO_DATE('2024-11-06', 'YYYY-MM-DD'), 'Alterações leves', 1);
