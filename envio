@@ -1,89 +1,86 @@
--- Criação da tabela Animal
-CREATE TABLE Animal (
-    ID_Animal NUMERIC(8) NOT NULL PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    Especie VARCHAR(50) NOT NULL,
-    Raca VARCHAR(50),
-    Idade NUMERIC(3),
-    Historico_Medico VARCHAR(4000)
-);
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uma pergunta especial</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fce4ec;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        #noBtn {
+            position: relative;
+            display: inline-block;
+        }
+        button {
+            padding: 15px 30px;
+            margin: 0 10px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: scale(1.1);
+        }
+        #noBtn button {
+            background-color: #9c27b0;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Você está pra baixo hoje?</h2>
+        <div class="button-container">
+            <button onclick="yesClicked()">Sim</button>
+            <span id="noBtn">
+                <button onmouseover="moveButton()">Não</button>
+            </span>
+        </div>
+    </div>
 
--- Criação da tabela Veterinário
-CREATE TABLE Veterinario (
-    ID_Veterinario NUMERIC(8) NOT NULL PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    Especialidade VARCHAR(100),
-    Anos_Experiencia NUMERIC(2)
-);
+    <script>
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            const maxX = window.innerWidth - 150;
+            const maxY = window.innerHeight - 150;
+            
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+            
+            btn.style.position = 'absolute';
+            btn.style.left = newX + 'px';
+            btn.style.top = newY + 'px';
+        }
 
--- Criação da tabela Consulta
-CREATE TABLE Consulta (
-    ID_Consulta NUMERIC(8) NOT NULL PRIMARY KEY,
-    ID_Animal NUMERIC(8) NOT NULL,
-    ID_Veterinario NUMERIC(8) NOT NULL,
-    Data DATE NOT NULL,
-    Descricao VARCHAR(4000),
-    FOREIGN KEY (ID_Animal) REFERENCES Animal(ID_Animal),
-    FOREIGN KEY (ID_Veterinario) REFERENCES Veterinario(ID_Veterinario)
-);
-
--- Criação da tabela Medicamento
-CREATE TABLE Medicamento (
-    ID_Medicamento NUMERIC(8) NOT NULL PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    Tipo VARCHAR(50),
-    Quantidade_Estoque NUMERIC(5)
-);
-
--- Criação da tabela Prescrição
-CREATE TABLE Prescricao (
-    ID_Prescricao NUMERIC(8) NOT NULL PRIMARY KEY,
-    ID_Medicamento NUMERIC(8) NOT NULL,
-    ID_Consulta NUMERIC(8) NOT NULL,
-    ID_Animal NUMERIC(8) NOT NULL,
-    ID_Veterinario NUMERIC(8) NOT NULL,
-    Dosagem CHAR(50) NOT NULL,
-    Frequencia CHAR(50) NOT NULL,
-    FOREIGN KEY (ID_Medicamento) REFERENCES Medicamento(ID_Medicamento),
-    FOREIGN KEY (ID_Consulta) REFERENCES Consulta(ID_Consulta),
-    FOREIGN KEY (ID_Animal) REFERENCES Animal(ID_Animal),
-    FOREIGN KEY (ID_Veterinario) REFERENCES Veterinario(ID_Veterinario)
-);
-
--- Criação da tabela Exame
-CREATE TABLE Exame (
-    ID_Exame NUMERIC(8) NOT NULL PRIMARY KEY,
-    ID_Consulta NUMERIC(8) NOT NULL,
-    ID_Animal NUMERIC(8) NOT NULL,
-    ID_Veterinario NUMERIC(8) NOT NULL,
-    Tipo VARCHAR(50) NOT NULL,
-    Data_Exame DATE NOT NULL,
-    Resultado CHAR(4000),
-    FOREIGN KEY (ID_Consulta) REFERENCES Consulta(ID_Consulta),
-    FOREIGN KEY (ID_Animal) REFERENCES Animal(ID_Animal),
-    FOREIGN KEY (ID_Veterinario) REFERENCES Veterinario(ID_Veterinario)
-);
-
--- Inserir dados na tabela Animal
-INSERT INTO ANIMAL VALUES (1, 'Rex', 'Cachorro', 'Labrador', 5, 'Histórico limpo');
-INSERT INTO ANIMAL VALUES (2, 'Mingau', 'Gato', 'Siamês', 3, 'Alergia a medicamentos');
-
--- Inserir dados na tabela Veterinário
-INSERT INTO VETERINARIO VALUES (1, 'Dr. João', 'Cirurgia', 10);
-INSERT INTO VETERINARIO VALUES (2, 'Dra. Ana', 'Clínica Geral', 5);
-
--- Inserir dados na tabela Medicamento
-INSERT INTO MEDICAMENTO VALUES (1, 'Antibiótico', 'Oral', 50);
-INSERT INTO MEDICAMENTO VALUES (2, 'Anti-inflamatório', 'Injetável', 30);
-
--- Inserir dados na tabela Consulta
-INSERT INTO CONSULTA VALUES (1, TO_DATE('2024-11-01', 'YYYY-MM-DD'), 'Consulta de rotina', 1, 1);
-INSERT INTO CONSULTA VALUES (2, TO_DATE('2024-11-05', 'YYYY-MM-DD'), 'Exame preventivo', 2, 2);
-
--- Inserir dados na tabela Prescrição
-INSERT INTO PRESCRICAO VALUES (1, 1, 1, '500mg', '2x ao dia');
-INSERT INTO PRESCRICAO VALUES (2, 2, 2, '200mg', '1x ao dia');
-
--- Inserir dados na tabela Exame
-INSERT INTO EXAME VALUES (1, 'Raio-X', TO_DATE('2024-11-05', 'YYYY-MM-DD'), 'Normal', 2);
-INSERT INTO EXAME VALUES (2, 'Sangue', TO_DATE('2024-11-06', 'YYYY-MM-DD'), 'Alterações leves', 1);
+        function yesClicked() {
+            alert('Sabia que você ia escolher sim! 😊');
+            window.location.href = 'https://youtube.com/shorts/MpAhL_auEYM?si=71w21C3sDb1x2x2e';
+        }
+    </script>
+</body>
+</html>
